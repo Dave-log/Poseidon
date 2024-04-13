@@ -1,4 +1,4 @@
-package com.nnk.springboot.security;
+package com.nnk.springboot.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
