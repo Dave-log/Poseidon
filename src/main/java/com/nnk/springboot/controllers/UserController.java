@@ -1,6 +1,7 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.dto.RegisterDTO;
 import com.nnk.springboot.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,16 +38,23 @@ public class UserController {
 
     @GetMapping("/add")
     public String addUser(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
+        RegisterDTO registerDTO = new RegisterDTO();
+        model.addAttribute("registerDTO", registerDTO);
         return "user/add";
     }
 
     @PostMapping("/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
+    public String validate(@Valid RegisterDTO registerDTO, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
+
+            User user = User.builder()
+                    .fullname(registerDTO.getFullname())
+                    .username(registerDTO.getUsername())
+                    .password(encoder.encode(registerDTO.getPassword()))
+                    .role(registerDTO.getRole())
+                    .build();
+
             userService.save(user);
             model.addAttribute("users", userService.getUsers());
             return "redirect:/user/list";
@@ -63,15 +71,22 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
+    public String updateUser(@PathVariable("id") Integer id, @Valid RegisterDTO registerDTO,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "user/update";
         }
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setId(id);
+
+        User user = User.builder()
+                .id(id)
+                .fullname(registerDTO.getFullname())
+                .username(registerDTO.getUsername())
+                .password(encoder.encode(registerDTO.getPassword()))
+                .role(registerDTO.getRole())
+                .build();
+
         userService.save(user);
         model.addAttribute("users", userService.getUsers());
         return "redirect:/user/list";

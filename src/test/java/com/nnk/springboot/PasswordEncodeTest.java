@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * Date: 09/03/2019
  * Time: 11:26 AM
  */
-@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class PasswordEncodeTest {
 

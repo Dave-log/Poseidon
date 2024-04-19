@@ -1,24 +1,23 @@
-package com.nnk.springboot;
+package com.nnk.springboot.repositories;
 
 import com.nnk.springboot.domain.Rating;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.nnk.springboot.repositories.RatingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class RatingTests {
 
-	private final RatingRepository ratingRepository;
-
-    public RatingTests(RatingRepository ratingRepository) {
-        this.ratingRepository = ratingRepository;
-    }
+	@Autowired
+	private RatingRepository ratingRepository;
 
     @Test
 	public void ratingTest() {

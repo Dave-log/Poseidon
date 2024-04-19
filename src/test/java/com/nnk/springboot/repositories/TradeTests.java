@@ -1,24 +1,23 @@
-package com.nnk.springboot;
+package com.nnk.springboot.repositories;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class TradeTests {
 
-	private final TradeRepository tradeRepository;
-
-    public TradeTests(TradeRepository tradeRepository) {
-        this.tradeRepository = tradeRepository;
-    }
+	@Autowired
+	private TradeRepository tradeRepository;
 
     @Test
 	public void tradeTest() {

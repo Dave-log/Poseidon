@@ -1,24 +1,21 @@
-package com.nnk.springboot;
+package com.nnk.springboot.repositories;
 
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class BidListTests {
 
-	private final BidListRepository bidListRepository;
-
-    public BidListTests(BidListRepository bidListRepository) {
-        this.bidListRepository = bidListRepository;
-    }
+	@Autowired
+	private BidListRepository bidListRepository;
 
     @Test
 	public void bidListTest() {

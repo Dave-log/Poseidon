@@ -1,24 +1,23 @@
-package com.nnk.springboot;
+package com.nnk.springboot.repositories;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class RuleTests {
 
-	private final RuleNameRepository ruleNameRepository;
-
-    public RuleTests(RuleNameRepository ruleNameRepository) {
-        this.ruleNameRepository = ruleNameRepository;
-    }
+	@Autowired
+	private RuleNameRepository ruleNameRepository;
 
     @Test
 	public void ruleTest() {

@@ -1,24 +1,23 @@
-package com.nnk.springboot;
+package com.nnk.springboot.repositories;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class CurvePointTests {
 
-	private final CurvePointRepository curvePointRepository;
-
-    public CurvePointTests(CurvePointRepository curvePointRepository) {
-        this.curvePointRepository = curvePointRepository;
-    }
+	@Autowired
+	private CurvePointRepository curvePointRepository;
 
     @Test
 	public void curvePointTest() {
@@ -48,5 +47,4 @@ public class CurvePointTests {
 		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
 		assertFalse(curvePointList.isPresent());
 	}
-
 }

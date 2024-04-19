@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @Controller
+@RequestMapping("/ruleName")
 public class RuleNameController {
 
     private final RuleNameService ruleNameService;
@@ -27,6 +28,7 @@ public class RuleNameController {
     @RequestMapping("/list")
     public String home(Model model)
     {
+        System.out.println("TEST");
         model.addAttribute("ruleNames", ruleNameService.getRuleNames());
         return "ruleName/list";
     }
