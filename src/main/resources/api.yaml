@@ -1,0 +1,812 @@
+openapi: 3.0.0
+
+info:
+  title: Poseidon API Specification
+  description: |-
+    A simple API for our financial aggregator app Poseidon.
+    Project link:
+    - [Poseidon Github Page](https://github.com/Dave-log/Poseidon)
+  version: '1.0.0'
+
+servers:
+  - url: http://localhost:8080
+    description: Local server
+
+tags:
+  - name: Bid List
+    description: Manages operations for bid lists
+  - name: Curve Point
+    description: Manages curve points used in financial analysis
+  - name: Rating
+    description: Manages ratings provided by financial rating agencies
+  - name: Rule Name
+    description: Manages rules and criteria used to evaluate financial data
+  - name: Trade
+    description: Allows CRUD financial trading operations
+  - name: User
+    description: Manages operations related to users
+
+paths:
+  /bidList/list:
+    get:
+      summary: Retrieve the list of bid lists
+      tags:
+        - Bid List
+      responses:
+        '200':
+          description: List of bid lists retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of bid lists</body></html>"
+
+  /bidList/add:
+    get:
+      summary: Display form for adding a new bid list
+      tags:
+        - Bid List
+      responses:
+        '200':
+          description: Form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Add bid list form</body></html>"
+
+  /bidList/validate:
+    post:
+      summary: Validate and save a new bid list
+      tags:
+        - Bid List
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BidList'
+      responses:
+        '302':
+          description: Bid list saved successfully and redirected to list page
+        '400':
+          description: Invalid request, bid list not saved
+        '500':
+          description: Internal server error
+
+  /bidList/update/{id}:
+    get:
+      summary: Display form for updating a bid list
+      tags:
+        - Bid List
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the bid list to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update bid list form</body></html>"
+
+    post:
+      summary: Update a bid list
+      tags:
+        - Bid List
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the bid list to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BidList'
+      responses:
+        '302':
+          description: Bid list updated successfully and redirected to list page
+        '400':
+          description: Invalid request, bid list not updated
+        '500':
+          description: Internal server error
+
+  /bidList/delete/{id}:
+    get:
+      summary: Delete a bid list
+      tags:
+        - Bid List
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the bid list to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Bid list deleted successfully and redirected to list page
+        '404':
+          description: Bid list not found
+        '500':
+          description: Internal server error
+
+  /curvePoint/list:
+    get:
+      summary: Retrieve the list of curve points
+      tags:
+        - Curve Point
+      responses:
+        '200':
+          description: List of curve points retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of curve points</body></html>"
+  /curvePoint/add:
+    post:
+      summary: Add a new curve point
+      tags:
+        - Curve Point
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurvePoint'
+      responses:
+        '302':
+          description: Curve point added successfully and redirected to list page
+        '400':
+          description: Invalid request, curve point not added
+        '500':
+          description: Internal server error
+  /curvePoint/update/{id}:
+    get:
+      summary: Display form for updating a curve point
+      tags:
+        - Curve Point
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the curve point to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update curve point form</body></html>"
+    post:
+      summary: Update a curve point
+      tags:
+        - Curve Point
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the curve point to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurvePoint'
+      responses:
+        '302':
+          description: Curve point updated successfully and redirected to list page
+        '400':
+          description: Invalid request, curve point not updated
+        '500':
+          description: Internal server error
+  /curvePoint/delete/{id}:
+    get:
+      summary: Delete a curve point
+      tags:
+        - Curve Point
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the curve point to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Curve point deleted successfully and redirected to list page
+        '404':
+          description: Curve point not found
+        '500':
+          description: Internal server error
+
+  /login:
+    get:
+      summary: Display login page
+      tags:
+        - Login
+      responses:
+        '200':
+          description: Login page displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Login page</body></html>"
+    post:
+      summary: Perform login
+      tags:
+        - Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDTO'
+      responses:
+        '302':
+          description: Redirect to bid list page after successful login
+        '400':
+          description: Invalid request, login not performed
+        '401':
+          description: Unauthorized access, login credentials invalid
+        '500':
+          description: Internal server error
+  /error:
+    get:
+      summary: Display error page
+      tags:
+        - Login
+      responses:
+        '200':
+          description: Error page displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Error page</body></html>"
+
+  /rating/list:
+    get:
+      summary: Retrieve the list of ratings
+      tags:
+        - Rating
+      responses:
+        '200':
+          description: List of ratings retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of ratings</body></html>"
+  /rating/add:
+    get:
+      summary: Display form for adding a new rating
+      tags:
+        - Rating
+      responses:
+        '200':
+          description: Add rating form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Add rating form</body></html>"
+    post:
+      summary: Add a new rating
+      tags:
+        - Rating
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+      responses:
+        '302':
+          description: Rating added successfully and redirected to list page
+        '400':
+          description: Invalid request, rating not added
+        '500':
+          description: Internal server error
+  /rating/update/{id}:
+    get:
+      summary: Display form for updating a rating
+      tags:
+        - Rating
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rating to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update rating form</body></html>"
+    post:
+      summary: Update a rating
+      tags:
+        - Rating
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rating to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rating'
+      responses:
+        '302':
+          description: Rating updated successfully and redirected to list page
+        '400':
+          description: Invalid request, rating not updated
+        '500':
+          description: Internal server error
+  /rating/delete/{id}:
+    get:
+      summary: Delete a rating
+      tags:
+        - Rating
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rating to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Rating deleted successfully and redirected to list page
+        '404':
+          description: Rating not found
+        '500':
+          description: Internal server error
+
+  /ruleName/list:
+    get:
+      summary: Retrieve the list of rule names
+      tags:
+        - Rule Name
+      responses:
+        '200':
+          description: List of rule names retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of rule names</body></html>"
+  /ruleName/add:
+    get:
+      summary: Display form for adding a new rule name
+      tags:
+        - Rule Name
+      responses:
+        '200':
+          description: Add rule name form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Add rule name form</body></html>"
+    post:
+      summary: Add a new rule name
+      tags:
+        - Rule Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleName'
+      responses:
+        '302':
+          description: Rule name added successfully and redirected to list page
+        '400':
+          description: Invalid request, rule name not added
+        '500':
+          description: Internal server error
+  /ruleName/update/{id}:
+    get:
+      summary: Display form for updating a rule name
+      tags:
+        - Rule Name
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rule name to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update rule name form</body></html>"
+    post:
+      summary: Update a rule name
+      tags:
+        - Rule Name
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rule name to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RuleName'
+      responses:
+        '302':
+          description: Rule name updated successfully and redirected to list page
+        '400':
+          description: Invalid request, rule name not updated
+        '500':
+          description: Internal server error
+  /ruleName/delete/{id}:
+    get:
+      summary: Delete a rule name
+      tags:
+        - Rule Name
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the rule name to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Rule name deleted successfully and redirected to list page
+        '404':
+          description: Rule name not found
+        '500':
+          description: Internal server error
+
+  /trade/list:
+    get:
+      summary: Retrieve the list of trades
+      tags:
+        - Trade
+      responses:
+        '200':
+          description: List of trades retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of trades</body></html>"
+  /trade/add:
+    get:
+      summary: Display form for adding a new trade
+      tags:
+        - Trade
+      responses:
+        '200':
+          description: Add trade form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Add trade form</body></html>"
+    post:
+      summary: Add a new trade
+      tags:
+        - Trade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trade'
+      responses:
+        '302':
+          description: Trade added successfully and redirected to list page
+        '400':
+          description: Invalid request, trade not added
+        '500':
+          description: Internal server error
+  /trade/update/{id}:
+    get:
+      summary: Display form for updating a trade
+      tags:
+        - Trade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the trade to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update trade form</body></html>"
+    post:
+      summary: Update a trade
+      tags:
+        - Trade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the trade to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trade'
+      responses:
+        '302':
+          description: Trade updated successfully and redirected to list page
+        '400':
+          description: Invalid request, trade not updated
+        '500':
+          description: Internal server error
+  /trade/delete/{id}:
+    get:
+      summary: Delete a trade
+      tags:
+        - Trade
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the trade to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Trade deleted successfully and redirected to list page
+        '404':
+          description: Trade not found
+        '500':
+          description: Internal server error
+
+  /user/list:
+    get:
+      summary: Retrieve the list of users
+      tags:
+        - User
+      responses:
+        '200':
+          description: List of users retrieved successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>List of users</body></html>"
+
+  /user/add:
+    get:
+      summary: Display form for adding a new user
+      tags:
+        - User
+      responses:
+        '200':
+          description: Add user form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Add user form</body></html>"
+    post:
+      summary: Add a new user
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '302':
+          description: User added successfully and redirected to list page
+        '400':
+          description: Invalid request, user not added
+        '500':
+          description: Internal server error
+  /user/update/{id}:
+    get:
+      summary: Display form for updating a user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to update
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Update form displayed successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<html><body>Update user form</body></html>"
+    post:
+      summary: Update a user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '302':
+          description: User updated successfully and redirected to list page
+        '400':
+          description: Invalid request, user not updated
+        '500':
+          description: Internal server error
+  /user/delete/{id}:
+    get:
+      summary: Delete a user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to delete
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: User deleted successfully and redirected to list page
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+
+components:
+  schemas:
+    BidList:
+      type: object
+      properties:
+        account:
+          type: string
+        type:
+          type: string
+        bidQuantity:
+          type: number
+      required:
+        - account
+        - type
+        - bidQuantity
+    CurvePoint:
+      type: object
+      properties:
+        curveId:
+          type: integer
+        term:
+          type: number
+        value:
+          type: number
+      required:
+        - curveId
+        - term
+        - value
+    LoginDTO:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+    Rating:
+      type: object
+      properties:
+        moodysRating:
+          type: string
+        sandPRating:
+          type: string
+        fitchRating:
+          type: string
+        orderNumber:
+          type: integer
+    RuleName:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        json:
+          type: string
+        template:
+          type: string
+        sqlStr:
+          type: string
+        sqlPart:
+          type: string
+      required:
+        - name
+        - json
+        - template
+        - sqlPart
+    Trade:
+      type: object
+      properties:
+        account:
+          type: string
+        type:
+          type: string
+        buyQuantity:
+          type: number
+      required:
+        - account
+        - type
+        - buyQuantity
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        fullname:
+          type: string
+        role:
+          type: string
+      required:
+        - username
+        - password
+        - fullname
+        - role
+

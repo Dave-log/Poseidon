@@ -1,4 +1,4 @@
-package com.nnk.springboot.controllers;
+package com.nnk.springboot.oldControllers;
 
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.dto.RegisterDTO;
@@ -100,5 +100,4 @@ public class UserController {
         model.addAttribute("users", userService.getUsers());
         return "redirect:/user/list";
     }
-
 }

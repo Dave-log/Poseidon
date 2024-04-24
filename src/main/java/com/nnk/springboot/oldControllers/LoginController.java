@@ -1,4 +1,4 @@
-package com.nnk.springboot.controllers;
+package com.nnk.springboot.oldControllers;
 
 import com.nnk.springboot.dto.LoginDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,8 +37,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@Valid LoginDTO loginDTO, BindingResult result, HttpServletRequest request) {
-        System.out.println(loginDTO.getUsername());
-        System.out.println(loginDTO.getPassword());
         if (result.hasErrors()) {
             return "/login";
         }
@@ -50,14 +48,6 @@ public class LoginController {
 
         return "redirect:/bidList/list";
     }
-
-//    @GetMapping("secure/article-details")
-//    public ModelAndView getAllUserArticles() {
-//        ModelAndView mav = new ModelAndView();
-//        mav.addObject("users", userRepository.findAll());
-//        mav.setViewName("user/list");
-//        return mav;
-//    }
 
     @GetMapping("error")
     public ModelAndView error() {
