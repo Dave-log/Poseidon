@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.services.RuleNameService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/ruleName")
+@Tag(name = "Rule Name")
 public class RuleNameController {
 
     private final RuleNameService ruleNameService;
@@ -25,7 +27,7 @@ public class RuleNameController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         System.out.println("TEST");

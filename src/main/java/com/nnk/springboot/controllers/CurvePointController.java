@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/curvePoint")
+@Tag(name = "Curve Point")
 public class CurvePointController {
 
     private final CurvePointService curvePointService;
@@ -25,7 +27,7 @@ public class CurvePointController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         model.addAttribute("curvePoints", curvePointService.getCurvePoints());

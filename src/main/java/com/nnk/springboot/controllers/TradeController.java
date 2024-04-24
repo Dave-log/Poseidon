@@ -2,16 +2,18 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.services.TradeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
+@RequestMapping("/trade")
+@Tag(name = "Trade")
 public class TradeController {
 
     private final TradeService tradeService;
@@ -24,21 +26,21 @@ public class TradeController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/trade/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         model.addAttribute("trades", tradeService.getTrades());
         return "trade/list";
     }
 
-    @GetMapping("/trade/add")
+    @GetMapping("/add")
     public String addTradeForm(Model model) {
         Trade trade = new Trade();
         model.addAttribute("trade", trade);
         return "trade/add";
     }
 
-    @PostMapping("/trade/validate")
+    @PostMapping("/validate")
     public String validate(@Valid Trade trade, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             tradeService.save(trade);
@@ -48,14 +50,14 @@ public class TradeController {
         return "trade/add";
     }
 
-    @GetMapping("/trade/update/{id}")
+    @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         Trade trade = tradeService.getTrade(id);
         model.addAttribute("trade", trade);
         return "trade/update";
     }
 
-    @PostMapping("/trade/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -67,7 +69,7 @@ public class TradeController {
         return "redirect:/trade/list";
     }
 
-    @GetMapping("/trade/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
         Trade trade = tradeService.getTrade(id);
         tradeService.delete(trade);

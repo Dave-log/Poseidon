@@ -18,7 +18,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating getRating(Integer id) {
         return ratingRepository.findById(id)
-                .orElseThrow(() -> new RatingNotFoundException(STR."Rating does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new RatingNotFoundException("Rating does not exist (id provided: " + id));
     }
 
     @Override

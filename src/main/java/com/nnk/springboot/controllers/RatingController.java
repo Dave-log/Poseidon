@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.services.RatingService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/rating")
+@Tag(name = "Rating")
 public class RatingController {
 
     private final RatingService ratingService;
@@ -25,7 +27,7 @@ public class RatingController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         model.addAttribute("ratings", ratingService.getRatings());

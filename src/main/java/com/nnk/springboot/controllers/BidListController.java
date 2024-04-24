@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 
-@Controller
+@RestController
+@RequestMapping("/bidList")
+@Tag(name = "Bid List")
 public class BidListController {
 
     private final BidListService bidListService;
@@ -25,21 +28,21 @@ public class BidListController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/bidList/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         model.addAttribute("bidLists", bidListService.getBidLists());
         return "bidList/list";
     }
 
-    @GetMapping("/bidList/add")
+    @GetMapping("/add")
     public String addBidForm(Model model) {
         BidList bidList = new BidList();
         model.addAttribute("bidList", bidList);
         return "bidList/add";
     }
 
-    @PostMapping("/bidList/validate")
+    @PostMapping("/validate")
     public String validate(@Valid BidList bidList, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             bidListService.save(bidList);
@@ -49,14 +52,14 @@ public class BidListController {
         return "bidList/add";
     }
 
-    @GetMapping("/bidList/update/{id}")
+    @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         BidList bidList = bidListService.getBidList(id);
         model.addAttribute("bidList", bidList);
         return "bidList/update";
     }
 
-    @PostMapping("/bidList/update/{id}")
+    @PostMapping("/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                              BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -68,7 +71,7 @@ public class BidListController {
         return "redirect:/bidList/list";
     }
 
-    @GetMapping("/bidList/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
         BidList bidList = bidListService.getBidList(id);
         bidListService.delete(bidList);

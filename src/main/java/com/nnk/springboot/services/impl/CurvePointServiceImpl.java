@@ -18,7 +18,7 @@ public class CurvePointServiceImpl implements CurvePointService {
     @Override
     public CurvePoint getCurvePoint(Integer id) {
         return curvePointRepository.findById(id)
-                .orElseThrow(() -> new CurvePointNotFoundException(STR."CurvePoint does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new CurvePointNotFoundException("CurvePoint does not exist (id provided: " + id));
     }
 
     @Override

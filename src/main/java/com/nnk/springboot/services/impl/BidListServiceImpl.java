@@ -18,7 +18,7 @@ public class BidListServiceImpl implements BidListService {
     @Override
     public BidList getBidList(Integer id) {
         return bidListRepository.findById(id)
-                .orElseThrow(() -> new BidListNotFoundException(STR."BidList does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new BidListNotFoundException("BidList does not exist (id provided: " + id));
     }
 
     @Override

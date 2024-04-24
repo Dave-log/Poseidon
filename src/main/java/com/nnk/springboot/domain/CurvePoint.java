@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -25,5 +26,8 @@ public class CurvePoint {
     private Timestamp asOfDate;
     private Double term;
     private Double value;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Timestamp creationDate;
 }

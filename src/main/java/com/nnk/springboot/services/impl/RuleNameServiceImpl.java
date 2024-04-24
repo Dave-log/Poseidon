@@ -18,7 +18,7 @@ public class RuleNameServiceImpl implements RuleNameService {
     @Override
     public RuleName getRuleName(Integer id) {
         return ruleNameRepository.findById(id)
-                .orElseThrow(() -> new RuleNameNotFoundException(STR."RuleName does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new RuleNameNotFoundException("RuleName does not exist (id provided: " + id));
     }
 
     @Override

@@ -18,7 +18,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public Trade getTrade(Integer id) {
         return tradeRepository.findById(id)
-                .orElseThrow(() -> new TradeNotFoundException(STR."Trade does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new TradeNotFoundException("Trade does not exist (id provided: " + id));
     }
 
     @Override

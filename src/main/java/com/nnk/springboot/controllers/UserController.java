@@ -3,18 +3,19 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.dto.RegisterDTO;
 import com.nnk.springboot.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/user")
+@Tag(name = "User")
 public class UserController {
 
     private final UserService userService;
@@ -29,7 +30,7 @@ public class UserController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
         model.addAttribute("users", userService.getUsers());

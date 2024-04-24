@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
@@ -37,7 +38,11 @@ public class Trade {
     private String trader;
     private String book;
     private String creationName;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private Timestamp creationDate;
+
     private String revisionName;
     private Timestamp revisionDate;
     private String dealName;

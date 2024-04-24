@@ -4,7 +4,7 @@ import com.nnk.springboot.domain.User;
 
 public interface UserService {
 
-    User getCurrentUser();
+//    User getCurrentUser();
     User getUser(Integer id);
     User getUser(String username);
     Iterable<User> getUsers();
