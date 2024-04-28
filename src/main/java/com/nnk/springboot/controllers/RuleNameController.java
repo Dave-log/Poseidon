@@ -1,7 +1,9 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.RuleName;
+import com.nnk.springboot.dto.RuleNameDTO;
 import com.nnk.springboot.services.RuleNameService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping("/ruleName")
+@Tag(name = "Rule Name", description = "Manages rules and criteria used to evaluate financial data")
 public class RuleNameController {
 
     private final RuleNameService ruleNameService;
@@ -25,55 +32,98 @@ public class RuleNameController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
-        System.out.println("TEST");
-        model.addAttribute("ruleNames", ruleNameService.getRuleNames());
+        Iterable<RuleName> ruleNameList = ruleNameService.getRuleNames();
+        List<RuleNameDTO> ruleNames = StreamSupport.stream(ruleNameList.spliterator(), false)
+                        .map(ruleName -> {
+                            RuleNameDTO ruleNameDTO = new RuleNameDTO();
+                            ruleNameDTO.setId(ruleName.getId());
+                            ruleNameDTO.setName(ruleName.getName());
+                            ruleNameDTO.setDescription(ruleName.getDescription());
+                            ruleNameDTO.setJson(ruleName.getJson());
+                            ruleNameDTO.setTemplate(ruleName.getTemplate());
+                            ruleNameDTO.setSqlPart(ruleName.getSqlStr());
+                            ruleNameDTO.setSqlStr(ruleName.getSqlPart());
+                            return ruleNameDTO;
+                        })
+                        .toList();
+
+        model.addAttribute("ruleNames", ruleNames);
         return "ruleName/list";
     }
 
     @GetMapping("/add")
     public String addRuleForm(Model model) {
-        RuleName ruleName = new RuleName();
-        model.addAttribute("ruleName", ruleName);
+        RuleNameDTO ruleNameDTO = new RuleNameDTO();
+        model.addAttribute("ruleNameDTO", ruleNameDTO);
         return "ruleName/add";
     }
 
     @PostMapping("/validate")
-    public String validate(@Valid RuleName ruleName, BindingResult result, Model model) {
+    @ResponseBody
+    public RedirectView validate(@Valid RuleNameDTO ruleNameDTO, BindingResult result) {
         if (!result.hasErrors()) {
+            RuleName ruleName = RuleName.builder()
+                    .name(ruleNameDTO.getName())
+                    .description(ruleNameDTO.getDescription())
+                    .json(ruleNameDTO.getJson())
+                    .template(ruleNameDTO.getTemplate())
+                    .sqlPart(ruleNameDTO.getSqlPart())
+                    .sqlStr(ruleNameDTO.getSqlStr())
+                    .build();
+
             ruleNameService.save(ruleName);
-            model.addAttribute("ruleNames", ruleNameService.getRuleNames());
-            return "redirect:/ruleName/list";
+            return new RedirectView("/ruleName/list");
         }
-        return "ruleName/add";
+        return new RedirectView("/ruleName/add");
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         RuleName ruleName = ruleNameService.getRuleName(id);
-        model.addAttribute("ruleName", ruleName);
+        RuleNameDTO ruleNameDTO = new RuleNameDTO(
+                ruleName.getId(),
+                ruleName.getName(),
+                ruleName.getDescription(),
+                ruleName.getJson(),
+                ruleName.getTemplate(),
+                ruleName.getSqlStr(),
+                ruleName.getSqlPart()
+        );
+
+        model.addAttribute("ruleNameDTO", ruleNameDTO);
         return "ruleName/update";
     }
 
     @PostMapping("/update/{id}")
-    public String updateRuleName(@PathVariable("id") Integer id, @Valid RuleName ruleName,
-                             BindingResult result, Model model) {
+    @ResponseBody
+    public RedirectView updateRuleName(@PathVariable("id") Integer id, @Valid RuleNameDTO ruleNameDTO,
+                             BindingResult result) {
         if (result.hasErrors()) {
-            return "ruleName/update";
+            return new RedirectView("/ruleName/update");
         }
-        ruleName.setId(id);
+
+        RuleName ruleName = RuleName.builder()
+                .id(id)
+                .name(ruleNameDTO.getName())
+                .description(ruleNameDTO.getDescription())
+                .json(ruleNameDTO.getJson())
+                .template(ruleNameDTO.getTemplate())
+                .sqlPart(ruleNameDTO.getSqlPart())
+                .sqlStr(ruleNameDTO.getSqlStr())
+                .build();
+
         ruleNameService.save(ruleName);
-        model.addAttribute("ruleNames", ruleNameService.getRuleNames());
-        return "redirect:/ruleName/list";
+        return new RedirectView("/ruleName/list");
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteRuleName(@PathVariable("id") Integer id, Model model) {
+    @ResponseBody
+    public RedirectView deleteRuleName(@PathVariable("id") Integer id) {
         RuleName ruleName = ruleNameService.getRuleName(id);
         ruleNameService.delete(ruleName);
-        model.addAttribute("ruleNames", ruleNameService.getRuleNames());
-        return "redirect:/ruleName/list";
+        return new RedirectView("/ruleName/list");
     }
 }

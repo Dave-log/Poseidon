@@ -1,7 +1,9 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.dto.CurvePointDTO;
 import com.nnk.springboot.services.CurvePointService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping("/curvePoint")
+@Tag(name = "Curve Point", description = "Manages curve points used in financial analysis")
 public class CurvePointController {
 
     private final CurvePointService curvePointService;
@@ -25,54 +32,82 @@ public class CurvePointController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
-        model.addAttribute("curvePoints", curvePointService.getCurvePoints());
+        Iterable<CurvePoint> curvePointList = curvePointService.getCurvePoints();
+        List<CurvePointDTO> curvePoints = StreamSupport.stream(curvePointList.spliterator(), false)
+                        .map(curvePoint -> new CurvePointDTO(
+                                curvePoint.getId(),
+                                curvePoint.getCurveId(),
+                                curvePoint.getTerm(),
+                                curvePoint.getValue()
+                        ))
+                        .toList();
+        model.addAttribute("curvePoints", curvePoints);
         return "curvePoint/list";
     }
 
     @GetMapping("/add")
-    public String addBidForm(Model model) {
-        CurvePoint curvePoint = new CurvePoint();
-        model.addAttribute("curvePoint", curvePoint);
+    public String addCurvePointForm(Model model) {
+        CurvePointDTO curvePointDTO = new CurvePointDTO();
+        model.addAttribute("curvePointDTO", curvePointDTO);
         return "curvePoint/add";
     }
 
     @PostMapping("/validate")
-    public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
+    @ResponseBody
+    public RedirectView validate(@Valid CurvePointDTO curvePointDTO, BindingResult result) {
         if (!result.hasErrors()) {
+            CurvePoint curvePoint = CurvePoint.builder()
+                    .curveId(curvePointDTO.getCurveId())
+                    .term(curvePointDTO.getTerm())
+                    .value(curvePointDTO.getValue())
+                    .build();
+
             curvePointService.save(curvePoint);
-            model.addAttribute("curvePoints", curvePointService.getCurvePoints());
-            return "redirect:/curvePoint/list";
+            return new RedirectView("/curvePoint/list");
         }
-        return "curvePoint/add";
+        return new RedirectView("curvePoint/add");
     }
 
     @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         CurvePoint curvePoint = curvePointService.getCurvePoint(id);
-        model.addAttribute("curvePoint", curvePoint);
+        CurvePointDTO curvePointDTO = new CurvePointDTO(
+                curvePoint.getId(),
+                curvePoint.getCurveId(),
+                curvePoint.getTerm(),
+                curvePoint.getValue()
+        );
+
+        model.addAttribute("curvePointDTO", curvePointDTO);
         return "curvePoint/update";
     }
 
     @PostMapping("/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
-                             BindingResult result, Model model) {
+    @ResponseBody
+    public RedirectView updateBid(@PathVariable("id") Integer id, @Valid CurvePointDTO curvePointDTO,
+                             BindingResult result) {
         if (result.hasErrors()) {
-            return "curvePoint/update";
+            return new RedirectView("curvePoint/update");
         }
-        curvePoint.setId(id);
+        CurvePoint curvePoint = CurvePoint.builder()
+                .id(id)
+                .curveId(curvePointDTO.getCurveId())
+                .term(curvePointDTO.getTerm())
+                .value(curvePointDTO.getValue())
+                .build();
+
         curvePointService.save(curvePoint);
-        model.addAttribute("curvePoints", curvePointService.getCurvePoints());
-        return "redirect:/curvePoint/list";
+        return new RedirectView("/curvePoint/list");
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
+    @ResponseBody
+    public RedirectView deleteBid(@PathVariable("id") Integer id) {
         CurvePoint curvePoint = curvePointService.getCurvePoint(id);
         curvePointService.delete(curvePoint);
-        model.addAttribute("curvePoints", curvePointService.getCurvePoints());
-        return "redirect:/curvePoint/list";
+        return new RedirectView("/curvePoint/list");
     }
 }

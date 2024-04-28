@@ -1,7 +1,7 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.BidList;
-import com.nnk.springboot.exceptions.notFound.BidListNotFoundException;
+import com.nnk.springboot.exceptions.BidListNotFoundException;
 import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class BidListServiceImpl implements BidListService {
     @Override
     public BidList getBidList(Integer id) {
         return bidListRepository.findById(id)
-                .orElseThrow(() -> new BidListNotFoundException(STR."BidList does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new BidListNotFoundException("BidList does not exist (id provided: " + id));
     }
 
     @Override

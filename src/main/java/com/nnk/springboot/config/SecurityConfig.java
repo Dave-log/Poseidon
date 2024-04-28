@@ -47,7 +47,22 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/login", "/user/add").permitAll()
+                        .requestMatchers(
+                                "/",
+                                "/login",
+                                "/user/add",
+                                "/v2/api-docs",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-resources",
+                                "/swagger-resources/**",
+                                "/configuration/ui",
+                                "/configuration/security",
+                                "/swagger-ui/**",
+                                "/webjars/**",
+                                "/swagger-ui.html"
+                        )
+                        .permitAll()
                         .requestMatchers(
                                 "/user/update/**",
                                 "/user/delete/**",
@@ -55,7 +70,9 @@ public class SecurityConfig {
                                 "/ruleName/**",
                                 "/rating/**",
                                 "/curvePoint/**",
-                                "/bidList/**").hasRole("USER")
+                                "/bidList/**"
+                        )
+                        .hasRole("USER")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

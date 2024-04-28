@@ -1,7 +1,7 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.RuleName;
-import com.nnk.springboot.exceptions.notFound.RuleNameNotFoundException;
+import com.nnk.springboot.exceptions.RuleNameNotFoundException;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import com.nnk.springboot.services.RuleNameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class RuleNameServiceImpl implements RuleNameService {
     @Override
     public RuleName getRuleName(Integer id) {
         return ruleNameRepository.findById(id)
-                .orElseThrow(() -> new RuleNameNotFoundException(STR."RuleName does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new RuleNameNotFoundException("RuleName does not exist (id provided: " + id));
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.dto.TradeDTO;
 import com.nnk.springboot.services.TradeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,8 +12,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Controller
+@RequestMapping("/trade")
+@Tag(name = "Trade", description = "Allows CRUD financial trading operations")
 public class TradeController {
 
     private final TradeService tradeService;
@@ -24,54 +32,85 @@ public class TradeController {
         return request.getRemoteUser();
     }
 
-    @RequestMapping("/trade/list")
+    @GetMapping("/list")
     public String home(Model model)
     {
-        model.addAttribute("trades", tradeService.getTrades());
+        Iterable<Trade> tradeList = tradeService.getTrades();
+        List<TradeDTO> trades = StreamSupport.stream(tradeList.spliterator(), false)
+                        .map(trade -> {
+                            TradeDTO tradeDTO = new TradeDTO();
+                            tradeDTO.setId(trade.getId());
+                            tradeDTO.setAccount(trade.getAccount());
+                            tradeDTO.setType(trade.getType());
+                            tradeDTO.setBuyQuantity(trade.getBuyQuantity());
+                            return tradeDTO;
+                        })
+                        .toList();
+
+        model.addAttribute("trades", trades);
         return "trade/list";
     }
 
-    @GetMapping("/trade/add")
+    @GetMapping("/add")
     public String addTradeForm(Model model) {
-        Trade trade = new Trade();
-        model.addAttribute("trade", trade);
+        TradeDTO tradeDTO = new TradeDTO();
+        model.addAttribute("tradeDTO", tradeDTO);
         return "trade/add";
     }
 
-    @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, BindingResult result, Model model) {
+    @PostMapping("/validate")
+    @ResponseBody
+    public RedirectView validate(@Valid TradeDTO tradeDTO, BindingResult result) {
         if (!result.hasErrors()) {
+            Trade trade = Trade.builder()
+                    .account(tradeDTO.getAccount())
+                    .type(tradeDTO.getType())
+                    .buyQuantity(tradeDTO.getBuyQuantity())
+                    .build();
+
             tradeService.save(trade);
-            model.addAttribute("trades", tradeService.getTrades());
-            return "redirect:/trade/list";
+            return new RedirectView("/trade/list");
         }
-        return "trade/add";
+        return new RedirectView("/trade/add");
     }
 
-    @GetMapping("/trade/update/{id}")
+    @GetMapping("/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         Trade trade = tradeService.getTrade(id);
-        model.addAttribute("trade", trade);
+        TradeDTO tradeDTO = new TradeDTO(
+                trade.getId(),
+                trade.getAccount(),
+                trade.getType(),
+                trade.getBuyQuantity()
+        );
+
+        model.addAttribute("tradeDTO", tradeDTO);
         return "trade/update";
     }
 
-    @PostMapping("/trade/update/{id}")
-    public String updateTrade(@PathVariable("id") Integer id, @Valid Trade trade,
-                             BindingResult result, Model model) {
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public RedirectView updateTrade(@PathVariable("id") Integer id, @Valid TradeDTO tradeDTO,
+                             BindingResult result) {
         if (result.hasErrors()) {
-            return "trade/update";
+            return new RedirectView("/trade/update");
         }
-        trade.setId(id);
+        Trade trade = Trade.builder()
+                .id(id)
+                .account(tradeDTO.getAccount())
+                .type(tradeDTO.getType())
+                .buyQuantity(tradeDTO.getBuyQuantity())
+                .build();
+
         tradeService.save(trade);
-        model.addAttribute("trades", tradeService.getTrades());
-        return "redirect:/trade/list";
+        return new RedirectView("/trade/list");
     }
 
-    @GetMapping("/trade/delete/{id}")
-    public String deleteTrade(@PathVariable("id") Integer id, Model model) {
+    @GetMapping("/delete/{id}")
+    @ResponseBody
+    public RedirectView deleteTrade(@PathVariable("id") Integer id) {
         Trade trade = tradeService.getTrade(id);
         tradeService.delete(trade);
-        model.addAttribute("trades", tradeService.getTrades());
-        return "redirect:/trade/list";
+        return new RedirectView("/trade/list");
     }
 }

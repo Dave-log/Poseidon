@@ -1,7 +1,7 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.CurvePoint;
-import com.nnk.springboot.exceptions.notFound.CurvePointNotFoundException;
+import com.nnk.springboot.exceptions.CurvePointNotFoundException;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.services.CurvePointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class CurvePointServiceImpl implements CurvePointService {
     @Override
     public CurvePoint getCurvePoint(Integer id) {
         return curvePointRepository.findById(id)
-                .orElseThrow(() -> new CurvePointNotFoundException(STR."CurvePoint does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new CurvePointNotFoundException("CurvePoint does not exist (id provided: " + id));
     }
 
     @Override

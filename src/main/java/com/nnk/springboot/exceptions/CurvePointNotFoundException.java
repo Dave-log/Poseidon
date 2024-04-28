@@ -1,4 +1,4 @@
-package com.nnk.springboot.exceptions.notFound;
+package com.nnk.springboot.exceptions;
 
 public class CurvePointNotFoundException extends RuntimeException {
 

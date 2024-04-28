@@ -1,7 +1,7 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Trade;
-import com.nnk.springboot.exceptions.notFound.TradeNotFoundException;
+import com.nnk.springboot.exceptions.TradeNotFoundException;
 import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.services.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public Trade getTrade(Integer id) {
         return tradeRepository.findById(id)
-                .orElseThrow(() -> new TradeNotFoundException(STR."Trade does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new TradeNotFoundException("Trade does not exist (id provided: " + id));
     }
 
     @Override

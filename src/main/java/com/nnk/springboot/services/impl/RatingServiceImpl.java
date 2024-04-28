@@ -1,7 +1,7 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Rating;
-import com.nnk.springboot.exceptions.notFound.RatingNotFoundException;
+import com.nnk.springboot.exceptions.RatingNotFoundException;
 import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.services.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating getRating(Integer id) {
         return ratingRepository.findById(id)
-                .orElseThrow(() -> new RatingNotFoundException(STR."Rating does not exist (id provided: \{id}"));
+                .orElseThrow(() -> new RatingNotFoundException("Rating does not exist (id provided: " + id));
     }
 
     @Override
