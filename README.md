@@ -2,7 +2,7 @@
 ## Technical:
 
 1. Spring Boot 3.2.4
-2. Java 22
+2. Java 21
 3. Thymeleaf
 4. Bootstrap v.5.3.3
 
