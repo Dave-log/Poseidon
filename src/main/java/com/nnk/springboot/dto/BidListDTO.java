@@ -15,7 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BidListDTO {
 
-        @NotNull
         private Integer id;
 
         @NotBlank(message = "Account is mandatory")

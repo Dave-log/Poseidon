@@ -15,7 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDTO {
 
-    @NotNull
     private Integer id;
 
     @NotBlank(message = "Fullname is mandatory")

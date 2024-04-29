@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RatingDTO {
 
-    @NotNull
     private Integer id;
 
     private String moodysRating;

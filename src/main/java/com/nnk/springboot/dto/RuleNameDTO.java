@@ -13,7 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RuleNameDTO {
 
-    @NotNull
     private Integer id;
 
     @NotBlank(message = "Name is mandatory")

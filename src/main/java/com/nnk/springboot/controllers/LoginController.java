@@ -1,21 +1,21 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.dto.LoginDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
-@RestController
+@Controller
+@Tag(name = "Login", description = "Manages login operation")
 public class LoginController {
     private final AuthenticationManager authenticationManager;
 
@@ -29,17 +29,16 @@ public class LoginController {
     }
 
     @GetMapping("/login")
-    public ModelAndView getLoginPage(Model model) {
-        ModelAndView mav = new ModelAndView();
+    public String getLoginPage(Model model) {
         model.addAttribute("loginDTO", new LoginDTO());
-        mav.setViewName("login");
-        return mav;
+        return "/login";
     }
 
     @PostMapping("/login")
-    public String login(@Valid LoginDTO loginDTO, BindingResult result) {
+    @ResponseBody
+    public RedirectView login(@Valid LoginDTO loginDTO, BindingResult result) {
         if (result.hasErrors()) {
-            return "/login";
+            return new RedirectView("/login");
         }
 
         Authentication authentication = authenticationManager.authenticate(
@@ -47,15 +46,13 @@ public class LoginController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "redirect:/bidList/list";
+        return new RedirectView("/bidList/list");
     }
 
-    @GetMapping("error")
-    public ModelAndView error() {
-        ModelAndView mav = new ModelAndView();
+    @GetMapping("/error")
+    public String error(Model model) {
         String errorMessage= "You are not authorized for the requested data.";
-        mav.addObject("errorMsg", errorMessage);
-        mav.setViewName("403");
-        return mav;
+        model.addAttribute("errorMsg", errorMessage);
+        return "403";
     }
 }

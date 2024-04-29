@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CurvePointDTO {
 
-    @NotNull
     private Integer id;
 
     @NotNull(message = "CurveId is mandatory")
